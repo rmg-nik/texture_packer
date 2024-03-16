@@ -1,0 +1,21 @@
+[submodule "ThirdParty/SDL"]
+	path = ThirdParty/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "ThirdParty/SDL_image"]
+	path = ThirdParty/SDL_image
+	url = https://github.com/libsdl-org/SDL_image
+[submodule "ThirdParty/imgui"]
+	path = ThirdParty/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "ThirdParty/nlohmann_json"]
+	path = ThirdParty/nlohmann_json
+	url = https://github.com/nlohmann/json
+[submodule "ThirdParty/cxxopts"]
+	path = ThirdParty/cxxopts
+	url = https://github.com/jarro2783/cxxopts
+[submodule "ThirdParty/freetype"]
+	path = ThirdParty/freetype
+	url = https://github.com/freetype/freetype
+[submodule "ThirdParty/portable-file-dialogs"]
+	path = ThirdParty/portable-file-dialogs
+	url = https://github.com/samhocevar/portable-file-dialogs

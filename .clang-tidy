@@ -1,0 +1,11 @@
+Checks: "-*,\
+modernize-*,\
+-modernize-use-trailing-return-type,\
+misc-*,\
+-misc-non-private-member-variables-in-classes,\
+-misc-no-recursion,\
+cppcoreguidelines-*,\
+-cppcoreguidelines-special-member-functions,\
+-cppcoreguidelines-pro-type-vararg,\
+misc-const-correctness\
+"
