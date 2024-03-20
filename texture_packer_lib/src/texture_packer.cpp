@@ -1,6 +1,7 @@
 #include <texture_packer/texture_packer.hpp>
 #include <texture_packer/utils.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <filesystem>
 

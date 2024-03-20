@@ -1,4 +1,4 @@
-#pragma once
+#include "gui.hpp"
 
 #include <SDL3/SDL.h>
 #include <imgui.h>

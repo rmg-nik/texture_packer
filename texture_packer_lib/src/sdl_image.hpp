@@ -2,6 +2,7 @@
 
 #include <texture_packer/abstract_image.hpp>
 
+#include <cmath>
 #include <memory>
 #include <mutex>
 #include <stdexcept>
@@ -104,8 +105,8 @@ class SdlImage : public CAbstractImage
 
     void Scale(double scale) override
     {
-        int  new_w = std::max(1, static_cast<int>(round(Width() * scale)));
-        int  new_h = std::max(1, static_cast<int>(round(Height() * scale)));
+        int  new_w = std::max(1, static_cast<int>(std::round(Width() * scale)));
+        int  new_h = std::max(1, static_cast<int>(std::round(Height() * scale)));
         auto old_sfc = m_surface;
         m_surface = SDL_CreateSurface(new_w, new_h, m_surface->format->format);
         SDL_BlitSurface(old_sfc, nullptr, m_surface, nullptr);

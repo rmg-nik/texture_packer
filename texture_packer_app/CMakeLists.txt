@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 project(texture_packer_app VERSION 0.1.0 LANGUAGES C CXX)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} cli.cpp gui.cpp main.cpp)
 
 target_link_libraries(${PROJECT_NAME} SDL3::SDL3 imgui texture_packer_lib cxxopts portable_file_dialogs)
 

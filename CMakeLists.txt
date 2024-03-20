@@ -61,5 +61,5 @@ target_include_directories(imgui
 
 #find_package(ImageMagick COMPONENTS Magick++ MagickCore MagickWand REQUIRED)
 
-add_subdirectory(texture_packer)
-add_subdirectory(app)
+add_subdirectory(texture_packer_lib)
+add_subdirectory(texture_packer_app)

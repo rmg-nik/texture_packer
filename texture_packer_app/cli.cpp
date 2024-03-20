@@ -1,4 +1,4 @@
-#pragma once
+#include "cli.hpp"
 
 #include <cxxopts.hpp>
 #include <texture_packer/texture_packer.hpp>
@@ -49,5 +49,4 @@ int run_cli(int argc, char** argv)
 
     return 0;
 }
-
 } // namespace TexturePackerApp
