@@ -165,12 +165,16 @@ int run_gui(int, char**)
             ImGuiID dock_id_1{};
             ImGuiID dock_id_2{};
             ImGuiID dock_id_3{};
+            ImGuiID dock_id_4{};
+            ImGuiID dock_id_5{};
             ImGui::DockBuilderRemoveNode(dockspace_id);
             ImGui::DockBuilderAddNode(dockspace_id);
             ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
             ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, &dock_id_0, &dock_id_1);
-            ImGui::DockBuilderSplitNode(dock_id_1, ImGuiDir_Left, 0.9f, &dock_id_2, &dock_id_3);
-            ImGui::DockBuilderDockWindow("Hierarchy", dock_id_0);
+            ImGui::DockBuilderSplitNode(dock_id_1, ImGuiDir_Left, 0.8f, &dock_id_2, &dock_id_3);
+            ImGui::DockBuilderSplitNode(dock_id_0, ImGuiDir_Up, 0.65f, &dock_id_4, &dock_id_5);
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_id_4);
+            ImGui::DockBuilderDockWindow("Preview", dock_id_5);
             ImGui::DockBuilderDockWindow("Viewport", dock_id_2);
             ImGui::DockBuilderDockWindow("Properties", dock_id_3);
             ImGui::DockBuilderFinish(dockspace_id);
@@ -212,6 +216,11 @@ int run_gui(int, char**)
         // Viewport
         ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
         ImGui::Text("Viewport contents");
+        ImGui::End();
+
+        // Preview
+        ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoMove);
+        ImGui::Text("Preview contents");
         ImGui::End();
 
         // Rendering
