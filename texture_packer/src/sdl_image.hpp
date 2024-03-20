@@ -32,7 +32,7 @@ class SdlImage : public CAbstractImage
     }
 
     SdlImage(int w, int h)
-        : m_surface(SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA8888))
+        : m_surface(SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32))
     {
     }
 
@@ -143,12 +143,12 @@ class SdlImage : public CAbstractImage
 
     void ConvertToRGBA() override
     {
-        if (m_surface->format->format == SDL_PIXELFORMAT_RGBA8888)
+        if (m_surface->format->format == SDL_PIXELFORMAT_RGBA32)
         {
             return;
         }
         auto old_sfc = m_surface;
-        m_surface = SDL_ConvertSurfaceFormat(m_surface, SDL_PIXELFORMAT_RGBA8888);
+        m_surface = SDL_ConvertSurfaceFormat(m_surface, SDL_PIXELFORMAT_RGBA32);
         SDL_DestroySurface(old_sfc);
     }
 
