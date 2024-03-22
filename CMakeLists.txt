@@ -35,6 +35,7 @@ add_subdirectory("ThirdParty/nlohmann_json")
 add_subdirectory("ThirdParty/cxxopts")
 add_subdirectory("ThirdParty/freetype")
 add_subdirectory("ThirdParty/portable-file-dialogs")
+add_subdirectory("ThirdParty/fmt")
 
 set(imgui_SOURCE_DIR "ThirdParty/imgui")
 # Build imgui static library

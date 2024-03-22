@@ -12,9 +12,9 @@
 #endif
 
 #include <portable-file-dialogs.h>
+#include <fmt/core.h>
 
 #include <filesystem>
-#include <format>
 #include <iostream>
 #include <stdexcept>
 
@@ -32,7 +32,7 @@ class TexturePackerGuiApplication
     {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
         {
-            throw std::runtime_error(std::format("Error: SDL_Init(): {}", SDL_GetError()));
+            throw std::runtime_error(fmt::format("Error: SDL_Init(): {}", SDL_GetError()));
         }
 
         // Enable native IME.
@@ -49,7 +49,7 @@ class TexturePackerGuiApplication
 
         if (m_window == nullptr)
         {
-            throw std::runtime_error(std::format("Error: SDL_CreateWindow(): {}", SDL_GetError()));
+            throw std::runtime_error(fmt::format("Error: SDL_CreateWindow(): {}", SDL_GetError()));
         }
         m_renderer = RenderPtr(
             SDL_CreateRenderer(
@@ -58,7 +58,7 @@ class TexturePackerGuiApplication
         if (m_renderer == nullptr)
         {
             throw std::runtime_error(
-                std::format("Error: SDL_CreateRenderer(): {}", SDL_GetError()));
+                fmt::format("Error: SDL_CreateRenderer(): {}", SDL_GetError()));
         }
         SDL_SetWindowPosition(m_window.get(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 

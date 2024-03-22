@@ -6,7 +6,14 @@ add_executable(${PROJECT_NAME} cli.cpp gui.cpp main.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
-target_link_libraries(${PROJECT_NAME} SDL3::SDL3 imgui texture_packer_lib cxxopts portable_file_dialogs)
+target_link_libraries(${PROJECT_NAME} 
+    SDL3::SDL3 
+    imgui 
+    texture_packer_lib 
+    cxxopts 
+    portable_file_dialogs
+    fmt::fmt
+    )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory
