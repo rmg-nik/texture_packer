@@ -4,6 +4,9 @@
 #include <memory>
 #include <string>
 
+struct SDL_Texture;
+struct SDL_Renderer;
+
 namespace TexturePacker
 {
 using Channel = std::uint8_t;
@@ -47,5 +50,8 @@ class CAbstractImage
 
     [[nodiscard]]
     virtual std::unique_ptr<CAbstractImage> Clone() const noexcept = 0;
+
+    [[nodiscard]]
+    virtual SDL_Texture* GetTexture(SDL_Renderer* renderer) = 0;
 };
 } // namespace TexturePacker

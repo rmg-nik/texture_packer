@@ -135,10 +135,10 @@ CRect CImage::GetBoundingBox() const
 {
     const int width = Width();
     const int height = Height();
-    int l = width;
-    int t = height;
-    int r = 0;
-    int b = 0;
+    int       l = width;
+    int       t = height;
+    int       r = 0;
+    int       b = 0;
 
     for (int x = 0; x < width; ++x)
     {
@@ -279,4 +279,8 @@ void CImage::AlphaBleeding(std::uint32_t bleeding_pixel)
     }
 }
 
+SDL_Texture* CImage::GetTexture(SDL_Renderer* renderer)
+{
+    return m_impl->GetTexture(renderer);
+}
 } // namespace TexturePacker

@@ -6,12 +6,15 @@
 #include <memory>
 #include <mutex>
 #include <stdexcept>
+#include <functional>
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
 namespace TexturePacker
 {
+using TexturePtr = std::unique_ptr<SDL_Texture, std::function<void(SDL_Texture*)>>;
+
 struct InitImageHelper
 {
     InitImageHelper()
@@ -159,6 +162,21 @@ class SdlImage : public CAbstractImage
         return std::make_unique<SdlImage>(*this);
     }
 
+    [[nodiscard]]
+    SDL_Texture* GetTexture(SDL_Renderer* renderer) override
+    {
+        if (m_texture == nullptr)
+        {
+            m_texture =
+                TexturePtr(SDL_CreateTextureFromSurface(renderer, m_surface), SDL_DestroyTexture);
+            if (m_texture == nullptr)
+            {
+                throw std::runtime_error(SDL_GetError());
+            }
+        }
+        return m_texture.get();
+    }
+
   private:
     void ConvertToRGBA()
     {
@@ -174,5 +192,6 @@ class SdlImage : public CAbstractImage
   private:
     InitImageHelper m_init_img_helper{};
     SDL_Surface*    m_surface{nullptr};
+    TexturePtr      m_texture{nullptr};
 };
 } // namespace TexturePacker

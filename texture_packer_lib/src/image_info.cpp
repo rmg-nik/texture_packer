@@ -3,30 +3,38 @@
 
 namespace TexturePacker
 {
+
+struct CExKeyGenerator
+{
+    static std::uint32_t NextExKey()
+    {
+        static std::uint32_t ex_key_counter = 0;
+        return ex_key_counter++;
+    }
+};
+
 CImageInfo::CImageInfo(CImage _image, std::string _image_path)
     : m_image(std::move(_image))
     , m_image_path(std::move(_image_path))
     , m_source_rect({0, 0, m_image.Width(), m_image.Height()})
     , m_source_bbox({0, 0, m_image.Width(), m_image.Height()})
     , m_source_size{m_image.Width(), m_image.Height()}
+    , m_ex_key(CExKeyGenerator::NextExKey())
 {
-    static std::uint32_t ex_key_counter = 0;
-    m_ex_key = ex_key_counter++;
 }
 
-/*
-   ImageInfo:: ImageInfo(const ImageInfo& image_info)
-        : m_image(image_info.m_image)
-        , m_image_path(image_info.m_image_path)
-        , m_source_rect(image_info.m_source_rect)
-        , m_source_bbox(image_info.m_source_bbox)
-        , m_source_size(image_info.m_source_size)
-        , m_trimmed(image_info.m_trimmed)
-        , m_extruded(image_info.m_extruded)
-        , m_ex_key(image_info.m_ex_key)
-    {
-    }
-*/
+CImageInfo::CImageInfo(const CImageInfo& image_info)
+    : m_image(image_info.m_image)
+    , m_image_path(image_info.m_image_path)
+    , m_source_rect(image_info.m_source_rect)
+    , m_source_bbox(image_info.m_source_bbox)
+    , m_source_size(image_info.m_source_size)
+    , m_trimmed(image_info.m_trimmed)
+    , m_extruded(image_info.m_extruded)
+    , m_ex_key(CExKeyGenerator::NextExKey())
+{
+}
+
 Size CImageInfo::GetSourceSize() const
 {
     return m_source_size;

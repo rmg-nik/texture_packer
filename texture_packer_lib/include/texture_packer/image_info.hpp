@@ -12,7 +12,7 @@ class CImageInfo
   public:
     CImageInfo(CImage _image, std::string _image_path);
 
-    // ImageInfo(const ImageInfo& image_info);
+    CImageInfo(const CImageInfo& image_info);
 
     void Trim(unsigned char alpha_threshold);
 
@@ -48,14 +48,14 @@ class CImageInfo
     Size GetSourceSize() const;
 
   private:
-    CImage               m_image;
-    std::string          m_image_path;
-    CRect                m_source_rect;
-    CRect                m_source_bbox;
-    Size                 m_source_size{};
-    bool                 m_trimmed{false};
-    int                  m_extruded{0};
-    std::uint32_t        m_ex_key{0};
+    CImage        m_image;
+    std::string   m_image_path;
+    CRect         m_source_rect;
+    CRect         m_source_bbox;
+    Size          m_source_size{};
+    bool          m_trimmed{false};
+    int           m_extruded{0};
+    std::uint32_t m_ex_key{0};
 };
 
 }; // namespace TexturePacker

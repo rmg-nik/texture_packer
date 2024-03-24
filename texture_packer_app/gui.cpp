@@ -1,5 +1,7 @@
 #include "gui.hpp"
 
+#include <texture_packer/image.hpp>
+
 #include <SDL3/SDL.h>
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
@@ -16,6 +18,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <set>
 #include <stdexcept>
 
 namespace TexturePackerApp
@@ -85,6 +88,7 @@ class TexturePackerGuiApplication
         ImGui_ImplSDL3_Shutdown();
         ImGui::DestroyContext();
 
+        m_image_to_preview.release();
         m_renderer.release();
         m_window.release();
         SDL_Quit();
@@ -109,10 +113,14 @@ class TexturePackerGuiApplication
             {
                 ImGui_ImplSDL3_ProcessEvent(&event);
                 if (event.type == SDL_EVENT_QUIT)
+                {
                     done = true;
+                }
                 if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
                     event.window.windowID == SDL_GetWindowID(m_window.get()))
+                {
                     done = true;
+                }
             }
 
             // Start the Dear ImGui frame
@@ -176,7 +184,28 @@ class TexturePackerGuiApplication
 
             // Preview
             ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoMove);
-            ImGui::Text("Preview contents");
+            if (m_image_to_preview != nullptr)
+            {
+                auto       cursor_pos = ImGui::GetCursorPos();
+                const auto windows_size = ImGui::GetWindowSize();
+                auto       texture = m_image_to_preview->GetTexture(m_renderer.get());
+                ImVec2     texture_size{static_cast<float>(m_image_to_preview->Width()),
+                                    static_cast<float>(m_image_to_preview->Height())};
+
+                float scale =
+                    std::min(windows_size.x / texture_size.x, windows_size.y / texture_size.y);
+                if (scale > 1.f)
+                {
+                    scale = 1.f;
+                }
+                texture_size.x *= scale;
+                texture_size.y *= scale;
+                cursor_pos = ImVec2{(windows_size.x - texture_size.x) / 2.f,
+                                    (windows_size.y - texture_size.y) / 2.f};
+
+                ImGui::SetCursorPos(cursor_pos);
+                ImGui::Image(static_cast<ImTextureID>(texture), texture_size);
+            }
             ImGui::End();
 
             // Right Property view
@@ -191,9 +220,9 @@ class TexturePackerGuiApplication
 
             // Rendering
             ImGui::Render();
-            //SDL_SetRenderScale(m_renderer.get(),
-            //                   ImGui::GetIO().DisplayFramebufferScale.x,
-            //                   ImGui::GetIO().DisplayFramebufferScale.y);
+            // SDL_SetRenderScale(m_renderer.get(),
+            //                    ImGui::GetIO().DisplayFramebufferScale.x,
+            //                    ImGui::GetIO().DisplayFramebufferScale.y);
             SDL_SetRenderDrawColor(
                 m_renderer.get(), (Uint8)(20), (Uint8)(20), (Uint8)(20), (Uint8)(255));
             SDL_RenderClear(m_renderer.get());
@@ -260,14 +289,26 @@ class TexturePackerGuiApplication
         {
             // SDL_Log("Selected path %s\n", selected_path.c_str());
             std::cout << "Selected path: " << m_selected_path << std::endl;
+            static const std::set<std::string> kSupportedFormats = {
+                ".png", ".jpg", ".jpeg", ".bmp"};
+            if (kSupportedFormats.contains(m_selected_path.extension().string()))
+            {
+                m_image_to_preview =
+                    std::make_unique<TexturePacker::CImage>(m_selected_path.string());
+            }
+            else
+            {
+                m_image_to_preview.release();
+            }
         }
     }
 
   private:
-    WindowPtr             m_window{nullptr};
-    RenderPtr             m_renderer{nullptr};
-    std::filesystem::path m_selected_folder;
-    std::filesystem::path m_selected_path;
+    WindowPtr                              m_window{nullptr};
+    RenderPtr                              m_renderer{nullptr};
+    std::unique_ptr<TexturePacker::CImage> m_image_to_preview{nullptr};
+    std::filesystem::path                  m_selected_folder;
+    std::filesystem::path                  m_selected_path;
 };
 
 int run_gui(int, char**)

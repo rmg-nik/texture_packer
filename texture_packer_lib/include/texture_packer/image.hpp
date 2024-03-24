@@ -7,6 +7,7 @@
 
 namespace TexturePacker
 {
+
 class CImage
 {
   public:
@@ -59,6 +60,9 @@ class CImage
     bool IsBorderPixel(int x, int y) const;
 
     void AlphaBleeding(std::uint32_t bleeding_pixel = 4);
+
+    [[nodiscard]]
+    SDL_Texture* GetTexture(SDL_Renderer* renderer);
 
   private:
     std::unique_ptr<CAbstractImage> m_impl;
