@@ -45,8 +45,6 @@ class CAbstractImage
 
     virtual void SetColor(int x, int y, Color value) = 0;
 
-    virtual void ConvertToRGBA() = 0;
-
     [[nodiscard]]
     virtual std::unique_ptr<CAbstractImage> Clone() const noexcept = 0;
 };

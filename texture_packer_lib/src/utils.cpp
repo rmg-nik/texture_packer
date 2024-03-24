@@ -37,7 +37,7 @@ std::vector<CImageInfo> load_image_infos_from_paths(const std::vector<std::strin
 
     for (auto file_path : file_paths)
     {
-        image_infos.emplace_back(CImageInfo(read_image_from_file(file_path), file_path));
+        image_infos.emplace_back(read_image_from_file(file_path), file_path);
     }
 
     return image_infos;
@@ -45,14 +45,16 @@ std::vector<CImageInfo> load_image_infos_from_paths(const std::vector<std::strin
 
 CImageInfo read_image_info_from_file(const std::string& file_path)
 {
-    return CImageInfo(read_image_from_file(file_path), file_path);
+    return {read_image_from_file(file_path), file_path};
 }
 
 void save_image_to_file(const std::string& file_path, const CImage& image)
 {
-    std::filesystem::path tmp(file_path);
-    if (!std::filesystem::exists(tmp.parent_path()))
-        std::filesystem::create_directories(tmp.parent_path());
+    const std::filesystem::path path(file_path);
+    if (!std::filesystem::exists(path.parent_path()))
+    {
+        std::filesystem::create_directories(path.parent_path());
+    }
 
     auto suffix = file_path.substr(file_path.find_last_of("."));
     assert(!suffix.empty());
@@ -80,9 +82,11 @@ void draw_image_in_image(CImage& main_image, const CImage& sub_image, int start_
 void dump_atlas_to_json(const std::string& file_path, const CAtlas& atlas,
                         ImageInfoMap& image_info_map, const std::string& texture_file_name)
 {
-    std::filesystem::path tmp(file_path);
-    if (!std::filesystem::exists(tmp.parent_path()))
-        std::filesystem::create_directories(tmp.parent_path());
+    const std::filesystem::path path(file_path);
+    if (!std::filesystem::exists(path.parent_path()))
+    {
+        std::filesystem::create_directories(path.parent_path());
+    }
 
     nlohmann::json root_json;
     nlohmann::json frames_json;

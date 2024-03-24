@@ -1,6 +1,8 @@
 #include <texture_packer/texture_packer.hpp>
 #include <texture_packer/utils.hpp>
 
+#include <fmt/printf.h>
+
 #include <algorithm>
 #include <cassert>
 #include <filesystem>
@@ -68,16 +70,14 @@ void CTexturePacker::Pack(const std::vector<CImageInfo>& image_infos, const CPac
 
     for (std::size_t i = 0; i < m_atlases.size(); ++i)
     {
-        auto atlas = m_atlases[i];
-        char buffer[1024];
-        sprintf(buffer, settings.atlases_pattern_name.c_str(), i);
-        std::string atlas_name = buffer;
-
-        std::string           image_file_name = atlas_name + "." + settings.atlases_output_format;
-        std::string           json_file_name = atlas_name + ".json";
-        std::filesystem::path image_path = settings.atlases_output_dir + "/" + image_file_name;
-        std::filesystem::path json_path = settings.atlases_output_dir + "/" + json_file_name;
-        auto                  image = dump_atlas_to_image(atlas, image_info_map);
+        const auto&       atlas = m_atlases[i];
+        const std::string atlas_name = fmt::sprintf(settings.atlases_pattern_name, i);
+        const std::string image_file_name = atlas_name + "." + settings.atlases_output_format;
+        const std::string json_file_name = atlas_name + ".json";
+        const std::filesystem::path image_path =
+            settings.atlases_output_dir + "/" + image_file_name;
+        const std::filesystem::path json_path = settings.atlases_output_dir + "/" + json_file_name;
+        auto                        image = dump_atlas_to_image(atlas, image_info_map);
         if (settings.reduce_border_artifacts)
         {
             image.AlphaBleeding();
@@ -96,9 +96,10 @@ void CTexturePacker::Pack(const CPackSettings& settings)
 void CTexturePacker::AddImageRects(std::vector<CImageRect> image_rects,
                                    const CPackSettings&    settings)
 {
-    std::sort(image_rects.begin(), image_rects.end(), [](const CImageRect& a, const CImageRect& b) {
-        return std::max(a.width, a.height) > std::max(b.width, b.height);
-    });
+    std::sort(image_rects.begin(),
+              image_rects.end(),
+              [](const CImageRect& a, const CImageRect& b)
+              { return std::max(a.width, a.height) > std::max(b.width, b.height); });
 
     for (auto image_rect : image_rects)
     {

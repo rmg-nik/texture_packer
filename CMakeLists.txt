@@ -29,12 +29,12 @@ set(SDL_HIDAPI OFF)
 set(SDL_JOYSTICK OFF)
 set(SDL_JOYSTICK OFF)
 
-add_subdirectory("ThirdParty/SDL")
-add_subdirectory("ThirdParty/SDL_image")
-add_subdirectory("ThirdParty/nlohmann_json")
-add_subdirectory("ThirdParty/cxxopts")
-add_subdirectory("ThirdParty/freetype")
-add_subdirectory("ThirdParty/portable-file-dialogs")
+add_subdirectory("ThirdParty/SDL" SYSTEM)
+add_subdirectory("ThirdParty/SDL_image" SYSTEM)
+add_subdirectory("ThirdParty/nlohmann_json" SYSTEM)
+add_subdirectory("ThirdParty/cxxopts" SYSTEM)
+add_subdirectory("ThirdParty/freetype" SYSTEM)
+add_subdirectory("ThirdParty/portable-file-dialogs" SYSTEM)
 add_subdirectory("ThirdParty/fmt")
 
 set(imgui_SOURCE_DIR "ThirdParty/imgui")
@@ -54,7 +54,7 @@ add_library(imgui STATIC
 target_compile_definitions(imgui PUBLIC IMGUI_ENABLE_FREETYPE)
 target_link_libraries(imgui PRIVATE SDL3::SDL3 freetype)
 
-target_include_directories(imgui
+target_include_directories(imgui SYSTEM
 	PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <utility>
 
 namespace TexturePacker
 {
@@ -98,9 +99,7 @@ struct CRect
 
     void rotate()
     {
-        int tmp = width;
-        width = height;
-        height = tmp;
+        std::swap(width, height);
     }
 
     [[nodiscard]]
@@ -124,7 +123,7 @@ struct CRect
     }
 
     [[nodiscard]]
-    std::vector<CRect> cut(CRect rect) const
+    std::vector<CRect> cut(const CRect& rect) const
     {
         std::vector<CRect> rects;
         if (is_overlapped(rect))

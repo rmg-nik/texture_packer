@@ -12,7 +12,12 @@ set(SOURCES
 add_library(${PROJECT_NAME} ${SOURCES})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json SDL3::SDL3 SDL3_image::SDL3_image)
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+  nlohmann_json 
+  SDL3::SDL3 
+  SDL3_image::SDL3_image
+  fmt::fmt
+)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(MSVC)

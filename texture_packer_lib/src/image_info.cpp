@@ -1,21 +1,17 @@
 #include <texture_packer/image_info.hpp>
 #include <texture_packer/utils.hpp>
 
-namespace
-{
-unsigned int EX_KEY_COUNTER = 0;
-}
-
 namespace TexturePacker
 {
 CImageInfo::CImageInfo(CImage _image, std::string _image_path)
     : m_image(std::move(_image))
-    , m_image_path(_image_path)
+    , m_image_path(std::move(_image_path))
     , m_source_rect({0, 0, m_image.Width(), m_image.Height()})
     , m_source_bbox({0, 0, m_image.Width(), m_image.Height()})
     , m_source_size{m_image.Width(), m_image.Height()}
-    , m_ex_key(EX_KEY_COUNTER++)
 {
+    static std::uint32_t ex_key_counter = 0;
+    m_ex_key = ex_key_counter++;
 }
 
 /*

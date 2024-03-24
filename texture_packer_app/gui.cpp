@@ -11,8 +11,8 @@
 #include <SDL3/SDL_opengl.h>
 #endif
 
-#include <portable-file-dialogs.h>
 #include <fmt/core.h>
+#include <portable-file-dialogs.h>
 
 #include <filesystem>
 #include <iostream>
@@ -39,13 +39,10 @@ class TexturePackerGuiApplication
         SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
         // Create window with SDL_Renderer graphics context
-        Uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
-        m_window = WindowPtr(
-            SDL_CreateWindow("Texture packer",
-                             1280,
-                             900,
-                             SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED),
-            SDL_DestroyWindow);
+        Uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED |
+                              SDL_WINDOW_HIGH_PIXEL_DENSITY;
+        m_window = WindowPtr(SDL_CreateWindow("Texture packer", 1280, 900, window_flags),
+                             SDL_DestroyWindow);
 
         if (m_window == nullptr)
         {
@@ -61,7 +58,6 @@ class TexturePackerGuiApplication
                 fmt::format("Error: SDL_CreateRenderer(): {}", SDL_GetError()));
         }
         SDL_SetWindowPosition(m_window.get(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -72,9 +68,11 @@ class TexturePackerGuiApplication
 
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
-        const float fontSize = 20.f;
+
+        const auto  scale = SDL_GetWindowDisplayScale(m_window.get());
+        const float font_size = 20.f * scale;
         io.FontDefault =
-            io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", fontSize);
+            io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", font_size);
 
         // Setup Platform/Renderer backends
         ImGui_ImplSDL3_InitForSDLRenderer(m_window.get(), m_renderer.get());
@@ -193,8 +191,9 @@ class TexturePackerGuiApplication
 
             // Rendering
             ImGui::Render();
-            // SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
-            // io.DisplayFramebufferScale.y);
+            //SDL_SetRenderScale(m_renderer.get(),
+            //                   ImGui::GetIO().DisplayFramebufferScale.x,
+            //                   ImGui::GetIO().DisplayFramebufferScale.y);
             SDL_SetRenderDrawColor(
                 m_renderer.get(), (Uint8)(20), (Uint8)(20), (Uint8)(20), (Uint8)(255));
             SDL_RenderClear(m_renderer.get());
@@ -216,12 +215,12 @@ class TexturePackerGuiApplication
             ImGuiTreeNodeFlags node_flags = base_flags;
             std::string        name = entry.path().string();
 
-            auto lastSlash = name.find_last_of("/\\");
-            lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-            name = name.substr(lastSlash, name.size() - lastSlash);
+            auto last_slash = name.find_last_of("/\\");
+            last_slash = last_slash == std::string::npos ? 0 : last_slash + 1;
+            name = name.substr(last_slash, name.size() - last_slash);
 
-            bool entryIsFile = !std::filesystem::is_directory(entry.path());
-            if (entryIsFile)
+            bool entry_is_file = !std::filesystem::is_directory(entry.path());
+            if (entry_is_file)
             {
                 node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
             }
@@ -234,7 +233,7 @@ class TexturePackerGuiApplication
             {
                 m_selected_path = entry;
             }
-            if (!entryIsFile)
+            if (!entry_is_file)
             {
                 if (node_open)
                 {

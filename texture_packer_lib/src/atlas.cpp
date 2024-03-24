@@ -89,16 +89,21 @@ std::tuple<unsigned int, unsigned int, bool> CAtlas::FindBestRank(const CImageRe
                                                                   bool enable_rotate) const
 {
     if (enable_rotate)
+    {
         return FindBestRankWithRotate(image_rect);
+    }
     return FindBestRankWithoutRotate(image_rect);
 }
 
 std::tuple<unsigned int, unsigned int, bool> CAtlas::FindBestRankWithRotate(
     const CImageRect& image_rect) const
 {
-    unsigned int best_rank, best_rank_r;
-    unsigned int best_free_rect_index, best_free_rect_index_r;
-    bool         rotate, rotate_r;
+    unsigned int best_rank{};
+    unsigned int best_rank_r{};
+    unsigned int best_free_rect_index{};
+    unsigned int best_free_rect_index_r{};
+    bool         rotate{};
+    bool         rotate_r{};
 
     CImageRect image_rect_rotated = image_rect;
     image_rect_rotated.rotate();
@@ -155,8 +160,8 @@ unsigned int CAtlas::Rank(CRect free_rect, const CImageRect& image_rect,
         break;
     }
 
-    int sp_x = free_rect.x == m_border_padding ? 0 : m_shape_padding;
-    int sp_y = free_rect.y == m_border_padding ? 0 : m_shape_padding;
+    const int sp_x = free_rect.x == m_border_padding ? 0 : m_shape_padding;
+    const int sp_y = free_rect.y == m_border_padding ? 0 : m_shape_padding;
 
     if (r < 0 || free_rect.width - image_rect.width < sp_x ||
         free_rect.height - image_rect.height < sp_y)
@@ -171,8 +176,8 @@ void CAtlas::PlaceImageRectInFreeRect(unsigned int free_rect_idx, CImageRect& im
 {
     auto free_rect = m_free_rects[free_rect_idx];
 
-    int sp_x = free_rect.x == m_border_padding ? 0 : m_shape_padding;
-    int sp_y = free_rect.y == m_border_padding ? 0 : m_shape_padding;
+    const int sp_x = free_rect.x == m_border_padding ? 0 : m_shape_padding;
+    const int sp_y = free_rect.y == m_border_padding ? 0 : m_shape_padding;
 
     image_rect.x = free_rect.x + sp_x;
     image_rect.y = free_rect.y + sp_y;
@@ -188,7 +193,7 @@ void CAtlas::PlaceImageRectInFreeRect(unsigned int free_rect_idx, CImageRect& im
     {
         if (tmp_rect.is_overlapped(rect))
         {
-            for (auto new_rect : rect.cut(static_cast<CRect>(tmp_rect)))
+            for (auto new_rect : rect.cut(tmp_rect))
             {
                 new_free_rects.emplace_back(new_rect);
             }
@@ -258,10 +263,10 @@ bool CAtlas::TryExpand()
         return false;
     }
 
-    int old_right = m_width - m_border_padding;
-    int old_bottom = m_height - m_border_padding;
-    int new_right = new_width - m_border_padding;
-    int new_bottom = new_height - m_border_padding;
+    const int old_right = m_width - m_border_padding;
+    const int old_bottom = m_height - m_border_padding;
+    const int new_right = new_width - m_border_padding;
+    const int new_bottom = new_height - m_border_padding;
 
     for (CRect& rect : m_free_rects)
     {

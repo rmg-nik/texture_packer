@@ -133,8 +133,8 @@ void CImage::EnlargeBorder(int size, bool repeat_border)
 
 CRect CImage::GetBoundingBox() const
 {
-    int width = Width();
-    int height = Height();
+    const int width = Width();
+    const int height = Height();
     int l = width;
     int t = height;
     int r = 0;
@@ -204,12 +204,12 @@ bool CImage::IsBorderPixel(int x, int y) const
     }
 
     const std::array<int, 3> offsets = {-1, 0, 1};
-    for (int offset_x : offsets)
+    for (const int offset_x : offsets)
     {
-        int nx = x + offset_x;
-        for (int offset_y : offsets)
+        const int nx = x + offset_x;
+        for (const int offset_y : offsets)
         {
-            int ny = y + offset_y;
+            const int ny = y + offset_y;
             if (nx >= 0 && nx < width && ny >= 0 && ny < height && GetColor(nx, ny).a == 0)
             {
                 return true;
@@ -235,7 +235,7 @@ void CImage::AlphaBleeding(std::uint32_t bleeding_pixel)
         {
             if (IsBorderPixel(x, y))
             {
-                borders0.emplace_back(Vec2{x, y});
+                borders0.emplace_back(x, y);
             }
         }
     }
@@ -248,15 +248,15 @@ void CImage::AlphaBleeding(std::uint32_t bleeding_pixel)
     {
         for (auto border : *borders)
         {
-            int x = std::get<0>(border);
-            int y = std::get<1>(border);
+            const int x = std::get<0>(border);
+            const int y = std::get<1>(border);
 
-            for (int offset_x : offsets)
+            for (const int offset_x : offsets)
             {
-                int nx = x + offset_x;
-                for (int offset_y : offsets)
+                const int nx = x + offset_x;
+                for (const int offset_y : offsets)
                 {
-                    int ny = y + offset_y;
+                    const int ny = y + offset_y;
                     if (nx >= 0 && nx < width && ny >= 0 && ny < height && GetColor(nx, ny).a == 0)
                     {
                         auto color = GetColor(x, y);
