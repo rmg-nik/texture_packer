@@ -163,8 +163,11 @@ class TexturePackerGuiApplication
                 {
                     if (ImGui::MenuItem("Open", "Ctrl+O"))
                     {
-                        m_selected_folder = pfd::select_folder("Select directory").result();
-                        std::cout << "Selected dir: " << m_selected_folder << "\n";
+                        SDL_ShowOpenFolderDialog(&TexturePackerGuiApplication::OnOpenFolderDialog,
+                                                 this,
+                                                 m_window.get(),
+                                                 SDL_GetBasePath(),
+                                                 SDL_FALSE);
                     }
                     if (ImGui::MenuItem("Exit"))
                     {
@@ -300,6 +303,28 @@ class TexturePackerGuiApplication
             {
                 m_image_to_preview.release();
             }
+        }
+    }
+
+    void SetPath(const std::filesystem::path& path)
+    {
+        m_selected_path = path;
+    }
+
+    static void SDLCALL OnOpenFolderDialog(void* userdata, const char* const* files, int)
+    {
+        if (files)
+        {
+            std::filesystem::path path{};
+            if (*files)
+            {
+                path = *files;
+            }
+            ((TexturePackerGuiApplication*)userdata)->SetPath(path);
+        }
+        else
+        {
+            SDL_Log("Error: %s\n", SDL_GetError());
         }
     }
 
