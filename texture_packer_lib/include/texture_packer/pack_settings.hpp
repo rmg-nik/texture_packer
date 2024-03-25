@@ -16,11 +16,11 @@ struct CPackSettings
     int         max_width{kDefaultAtlasSize};
     int         max_height{kDefaultAtlasSize};
     int         border_padding{0};
-    int         shape_padding{0};
+    int         shape_padding{2};
     double      scale{1.0};
     std::string images_input_dir;
     std::string atlases_output_dir;
-    std::string atlases_pattern_name;
+    std::string atlases_pattern_name{"atlas_%02d"};
     std::string atlases_output_format{"png"};
 };
 

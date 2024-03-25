@@ -49,6 +49,7 @@ add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/imgui_tables.cpp
     ${imgui_SOURCE_DIR}/imgui_tables.cpp
     ${imgui_SOURCE_DIR}/misc/freetype/imgui_freetype.cpp
+    ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
 )
 
 target_compile_definitions(imgui PUBLIC IMGUI_ENABLE_FREETYPE)
@@ -58,6 +59,7 @@ target_include_directories(imgui SYSTEM
 	PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
+    ${imgui_SOURCE_DIR}/misc/cpp
 )
 
 #find_package(ImageMagick COMPONENTS Magick++ MagickCore MagickWand REQUIRED)
