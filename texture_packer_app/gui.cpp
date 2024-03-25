@@ -108,27 +108,57 @@ class TexturePackerGuiApplication
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
 
-            // ImGui::ShowDemoWindow(nullptr);
+            ImGui::ShowDemoWindow(nullptr);
 
-            ProcessDocking();
+            if (false)
+            {
+                const float kFirstColumnWidth = 250.f;
+                const float kLastColumnWidth = 300.f;
+                const float kMiddleColumntWidth =
+                    ImGui::GetMainViewport()->Size.x - kFirstColumnWidth - kLastColumnWidth;
+                ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
+                ImGui::SetNextWindowPos(ImVec2{});
+                ImGui::Begin("Main window",
+                             nullptr,
+                             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_NoTitleBar);
+                if (ImGui::BeginTable(
+                        "Layout", 3, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable))
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    // ImGui::TableSetupColumn("Hierarchy");
+                    if (ImGui::BeginTable("Hierarchy and Preview",
+                                          1,
+                                          ImGuiTableFlags_SizingStretchSame |
+                                              ImGuiTableFlags_Resizable))
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::BeginChild("Hierarchy", ImVec2(200, 0), true);
+                        ImGui::Text("Hierarchy content");
+                        ImGui::EndChild();
 
-            // Menu Bar
-            ProcessMenuBar();
+                        ImGui::TableNextRow();
+                        ImGui::BeginChild("Preview", ImVec2(200, 0), true);
+                        ImGui::Text("Preview content");
+                        ImGui::EndChild();
+                        ImGui::EndTable();
+                    }
+                    ImGui::TableNextColumn();
+                    ImGui::BeginChild("Viewport Pane", ImVec2(0, 0), true);
+                    ImGui::Text("Viewport Pane Content");
+                    ImGui::EndChild();
 
-            // Left Hierarchy view
-            ProcessHierarchy();
+                    ImGui::TableNextColumn();
+                    ImGui::BeginChild("Properties Pane", ImVec2(200, 0), true);
+                    ImGui::Text("Properties Content");
+                    ImGui::EndChild();
 
-            // Preview
-            ProcessPreview();
-
-            // Right Property view
-            ProcessProperties();
-
-            // Viewport
-            ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
-            ImGui::Text("Viewport contents");
-            ImGui::End();
-
+                    // End the table layout
+                    ImGui::EndTable();
+                }
+                ImGui::End();
+            }
             // Rendering
             ImGui::Render();
             // SDL_SetRenderScale(m_renderer.get(),
