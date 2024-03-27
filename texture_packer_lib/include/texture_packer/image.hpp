@@ -10,61 +10,61 @@ namespace TexturePacker
 
 class CImage
 {
-  public:
-    CImage(const std::string& path);
+public:
+  CImage(const std::string& path);
 
-    CImage(int w, int h);
+  CImage(int w, int h);
 
-    CImage(const CImage& other);
+  CImage(const CImage& other);
 
-    CImage(CImage&& other) noexcept;
+  CImage(CImage&& other) noexcept;
 
-    CImage& operator=(const CImage& other);
+  CImage& operator=(const CImage& other);
 
-    CImage& operator=(CImage&& other) noexcept;
+  CImage& operator=(CImage&& other) noexcept;
 
-    ~CImage();
+  ~CImage();
 
-    [[nodiscard]]
-    int Width() const;
+  [[nodiscard]]
+  int Width() const;
 
-    [[nodiscard]]
-    int Height() const;
+  [[nodiscard]]
+  int Height() const;
 
-    [[nodiscard]]
-    int Channels() const;
+  [[nodiscard]]
+  int Channels() const;
 
-    void SaveAsJPEG(const std::string& path) const;
+  void SaveAsJPEG(const std::string& path) const;
 
-    void SaveAsPNG(const std::string& path) const;
+  void SaveAsPNG(const std::string& path) const;
 
-    void Crop(int left, int top, int right, int bottom);
+  void Crop(int left, int top, int right, int bottom);
 
-    void Scale(double scale);
+  void Scale(double scale);
 
-    void Composite(const CImage& src, int xOffset, int yOffset);
+  void Composite(const CImage& src, int xOffset, int yOffset);
 
-    [[nodiscard]]
-    Color GetColor(int x, int y) const;
+  [[nodiscard]]
+  Color GetColor(int x, int y) const;
 
-    void SetColor(int x, int y, Color value);
+  void SetColor(int x, int y, Color value);
 
-    void EnlargeBorder(int size, bool repeat_border);
+  void EnlargeBorder(int size, bool repeat_border);
 
-    [[nodiscard]]
-    CRect GetBoundingBox() const;
+  [[nodiscard]]
+  CRect GetBoundingBox() const;
 
-    void CleanPixelAlphaBelow(const Channel alpha);
+  void CleanPixelAlphaBelow(const Channel alpha);
 
-    [[nodiscard]]
-    bool IsBorderPixel(int x, int y) const;
+  [[nodiscard]]
+  bool IsBorderPixel(int x, int y) const;
 
-    void AlphaBleeding(std::uint32_t bleeding_pixel = 4);
+  void AlphaBleeding(std::uint32_t bleeding_pixel = 4);
 
-    [[nodiscard]]
-    SDL_Texture* GetTexture(SDL_Renderer* renderer);
+  [[nodiscard]]
+  SDL_Texture* GetTexture(SDL_Renderer* renderer);
 
-  private:
-    std::unique_ptr<CAbstractImage> m_impl;
+private:
+  std::unique_ptr<CAbstractImage> m_impl;
 };
 } // namespace TexturePacker

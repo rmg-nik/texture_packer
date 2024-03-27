@@ -5,17 +5,17 @@
 
 int main(int argc, char** argv)
 {
-    try
+  try
+  {
+    if (argc > 1)
     {
-        if (argc > 1)
-        {
-            return TexturePackerApp::run_cli(argc, argv);
-        }
-        return TexturePackerApp::run_gui(argc, argv);
+      return TexturePackerApp::run_cli(argc, argv);
     }
-    catch (const std::exception& ex)
-    {
-        std::cerr << "An error occurred: " << ex.what() << std::endl;
-        return -1;
-    }
+    return TexturePackerApp::run_gui(argc, argv);
+  }
+  catch (const std::exception& ex)
+  {
+    std::cerr << "An error occurred: " << ex.what() << std::endl;
+    return -1;
+  }
 }

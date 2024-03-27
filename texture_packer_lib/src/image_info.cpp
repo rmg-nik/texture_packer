@@ -6,11 +6,11 @@ namespace TexturePacker
 
 struct CExKeyGenerator
 {
-    static std::uint32_t NextExKey()
-    {
-        static std::uint32_t ex_key_counter = 0;
-        return ex_key_counter++;
-    }
+  static std::uint32_t NextExKey()
+  {
+    static std::uint32_t ex_key_counter = 0;
+    return ex_key_counter++;
+  }
 };
 
 CImageInfo::CImageInfo(CImage _image, std::string _image_path)
@@ -37,87 +37,87 @@ CImageInfo::CImageInfo(const CImageInfo& image_info)
 
 Size CImageInfo::GetSourceSize() const
 {
-    return m_source_size;
+  return m_source_size;
 }
 
 const std::string& CImageInfo::GetImagePath() const
 {
-    return m_image_path;
+  return m_image_path;
 }
 
 CRect CImageInfo::GetSourceBbox() const
 {
-    return m_source_bbox;
+  return m_source_bbox;
 }
 
 CRect CImageInfo::GetSourceRect() const
 {
-    return m_source_rect;
+  return m_source_rect;
 }
 
 std::uint32_t CImageInfo::GetExKey() const
 {
-    return m_ex_key;
+  return m_ex_key;
 }
 
 const CImage& CImageInfo::GetImage() const
 {
-    return m_image;
+  return m_image;
 }
 
 CImageRect CImageInfo::GetImageRect() const
 {
-    CImageRect image_rect;
-    image_rect.x = 0;
-    image_rect.y = 0;
-    image_rect.width = m_image.Width();
-    image_rect.height = m_image.Height();
-    image_rect.m_ex_key = m_ex_key;
-    return image_rect;
+  CImageRect image_rect;
+  image_rect.x = 0;
+  image_rect.y = 0;
+  image_rect.width = m_image.Width();
+  image_rect.height = m_image.Height();
+  image_rect.m_ex_key = m_ex_key;
+  return image_rect;
 }
 
 unsigned char CImageInfo::GetExtruded() const
 {
-    return m_extruded;
+  return m_extruded;
 }
 
 void CImageInfo::Extrude(int size)
 {
-    if (m_extruded)
-    {
-        return;
-    }
+  if (m_extruded)
+  {
+    return;
+  }
 
-    m_extruded = size;
-    m_image.EnlargeBorder(m_extruded, true);
+  m_extruded = size;
+  m_image.EnlargeBorder(m_extruded, true);
 
-    m_source_rect.x += m_extruded;
-    m_source_rect.y += m_extruded;
+  m_source_rect.x += m_extruded;
+  m_source_rect.y += m_extruded;
 
-    m_source_bbox.x += m_extruded;
-    m_source_bbox.y += m_extruded;
+  m_source_bbox.x += m_extruded;
+  m_source_bbox.y += m_extruded;
 }
 
 bool CImageInfo::IsTrimmed() const
 {
-    return m_trimmed;
+  return m_trimmed;
 }
 
 void CImageInfo::Scale(double scale)
 {
-    m_image.Scale(scale);
-    m_source_rect = {0, 0, m_image.Width(), m_image.Height()};
-    m_source_bbox = {0, 0, m_image.Width(), m_image.Height()};
+  m_image.Scale(scale);
+  m_source_rect = {0, 0, m_image.Width(), m_image.Height()};
+  m_source_bbox = {0, 0, m_image.Width(), m_image.Height()};
 }
 
 void CImageInfo::Trim(unsigned char alpha_threshold)
 {
-    m_trimmed = true;
-    m_image.CleanPixelAlphaBelow(alpha_threshold);
-    m_source_bbox = m_image.GetBoundingBox();
-    m_image.Crop(m_source_bbox.get_left(),
-                 m_source_bbox.get_top(),
-                 m_source_bbox.get_right(),
-                 m_source_bbox.get_bottom());
+  m_trimmed = true;
+  m_image.CleanPixelAlphaBelow(alpha_threshold);
+  m_source_bbox = m_image.GetBoundingBox();
+  m_image.Crop(m_source_bbox.get_left(),
+               m_source_bbox.get_top(),
+               m_source_bbox.get_right(),
+               m_source_bbox.get_bottom());
 }
 } // namespace TexturePacker

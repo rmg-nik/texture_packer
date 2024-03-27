@@ -22,148 +22,148 @@ namespace TexturePacker
 {
 class MagicImage : public CAbstractImage
 {
-  public:
-    MagicImage(const std::string& path)
+public:
+  MagicImage(const std::string& path)
+  {
+    static std::once_flag init_image_magic;
+    std::call_once(init_image_magic, []() { Magick::InitializeMagick(nullptr); });
+    try
     {
-        static std::once_flag init_image_magic;
-        std::call_once(init_image_magic, []() { Magick::InitializeMagick(nullptr); });
-        try
-        {
-            m_image = std::make_shared<Magick::Image>(path);
-        }
-        catch (...)
-        {
-            std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
-            std::terminate();
-        }
-
-        m_image->type(MagickCore::ImageType::TrueColorAlphaType);
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
+      m_image = std::make_shared<Magick::Image>(path);
+    }
+    catch (...)
+    {
+      std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+      std::terminate();
     }
 
-    MagicImage(int w, int h)
-    {
-        auto c = Magick::Color(0, 0, 0, 0);
-        auto size = Magick::Geometry(w, h);
-        m_image = std::make_shared<Magick::Image>(size, c);
-        m_image->type(MagickCore::ImageType::TrueColorAlphaType);
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
-    }
+    m_image->type(MagickCore::ImageType::TrueColorAlphaType);
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    MagicImage(const MagicImage& other)
-    {
-        m_image = std::make_shared<Magick::Image>(*other.m_image);
-        m_image->type(MagickCore::ImageType::TrueColorAlphaType);
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
-    }
+  MagicImage(int w, int h)
+  {
+    auto c = Magick::Color(0, 0, 0, 0);
+    auto size = Magick::Geometry(w, h);
+    m_image = std::make_shared<Magick::Image>(size, c);
+    m_image->type(MagickCore::ImageType::TrueColorAlphaType);
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    ~MagicImage() override
-    {
-        m_view->sync();
-    }
+  MagicImage(const MagicImage& other)
+  {
+    m_image = std::make_shared<Magick::Image>(*other.m_image);
+    m_image->type(MagickCore::ImageType::TrueColorAlphaType);
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    [[nodiscard]]
-    int Width() const override
-    {
-        return static_cast<int>(m_image->size().width());
-    }
+  ~MagicImage() override
+  {
+    m_view->sync();
+  }
 
-    [[nodiscard]]
-    int Height() const override
-    {
-        return static_cast<int>(m_image->size().height());
-    }
+  [[nodiscard]]
+  int Width() const override
+  {
+    return static_cast<int>(m_image->size().width());
+  }
 
-    [[nodiscard]]
-    int Channels() const override
-    {
-        return static_cast<int>(m_image->channels());
-    }
+  [[nodiscard]]
+  int Height() const override
+  {
+    return static_cast<int>(m_image->size().height());
+  }
 
-    void SaveAsJPEG(const std::string& path) const override
-    {
-        m_image->write(path);
-    }
+  [[nodiscard]]
+  int Channels() const override
+  {
+    return static_cast<int>(m_image->channels());
+  }
 
-    void SaveAsPNG(const std::string& path) const override
-    {
-        m_image->quality(100);
-        m_image->write("png32:" + path);
-    }
+  void SaveAsJPEG(const std::string& path) const override
+  {
+    m_image->write(path);
+  }
 
-    void Crop(int left, int top, int right, int bottom) override
-    {
-        auto geom = Magick::Geometry(right - left, bottom - top, left, top);
-        m_image->crop(geom);
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
-    }
+  void SaveAsPNG(const std::string& path) const override
+  {
+    m_image->quality(100);
+    m_image->write("png32:" + path);
+  }
 
-    void Scale(double scale) override
-    {
-        int w = std::max(1, static_cast<int>(round(Width() * scale)));
-        int h = std::max(1, static_cast<int>(round(Height() * scale)));
-        m_image->resize(Magick::Geometry(w, h));
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
-    }
+  void Crop(int left, int top, int right, int bottom) override
+  {
+    auto geom = Magick::Geometry(right - left, bottom - top, left, top);
+    m_image->crop(geom);
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    Color GetColor(int x, int y) const override
-    {
-        auto w = Width();
-        auto channels = Channels();
-        int  offset = channels * (w * y + x);
-        Color color;
-        color.r = m_pixels[offset + 0];
-        color.g = m_pixels[offset + 1];
-        color.b = m_pixels[offset + 2];
-        color.a = m_pixels[offset + 3];
-    }
+  void Scale(double scale) override
+  {
+    int w = std::max(1, static_cast<int>(round(Width() * scale)));
+    int h = std::max(1, static_cast<int>(round(Height() * scale)));
+    m_image->resize(Magick::Geometry(w, h));
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    void SetColor(int x, int y, Color value) override
-    {
-        auto w = Width();
-        auto channels = Channels();
-        int  offset = channels * (w * y + x);
-        m_pixels[offset + 0] = value.r;
-        m_pixels[offset + 1] = value.g;
-        m_pixels[offset + 2] = value.b;
-        m_pixels[offset + 3] = value.a;
-    }
+  Color GetColor(int x, int y) const override
+  {
+    auto  w = Width();
+    auto  channels = Channels();
+    int   offset = channels * (w * y + x);
+    Color color;
+    color.r = m_pixels[offset + 0];
+    color.g = m_pixels[offset + 1];
+    color.b = m_pixels[offset + 2];
+    color.a = m_pixels[offset + 3];
+  }
 
-    void Composite(const CAbstractImage& src, int xOffset, int yOffset) override
-    {
-        const auto& magic_src = dynamic_cast<const MagicImage&>(src);
-        m_image->composite(
-            *magic_src.m_image, xOffset, yOffset, Magick::CompositeOperator::BlendCompositeOp);
-        m_view = std::make_shared<Magick::Pixels>(*m_image);
-        m_pixels = m_view->get(0, 0, Width(), Height());
-    }
+  void SetColor(int x, int y, Color value) override
+  {
+    auto w = Width();
+    auto channels = Channels();
+    int  offset = channels * (w * y + x);
+    m_pixels[offset + 0] = value.r;
+    m_pixels[offset + 1] = value.g;
+    m_pixels[offset + 2] = value.b;
+    m_pixels[offset + 3] = value.a;
+  }
 
-    void ConvertToRGBA() override
-    {
-        if (Channels() == 4)
-        {
-            return;
-        }
-        assert(false); // TODO
-        auto new_image = MagicImage(Width(), Height());
-        new_image.Composite(*this, 0, 0);
-        std::swap(*this, new_image);
-    }
+  void Composite(const CAbstractImage& src, int xOffset, int yOffset) override
+  {
+    const auto& magic_src = dynamic_cast<const MagicImage&>(src);
+    m_image->composite(
+        *magic_src.m_image, xOffset, yOffset, Magick::CompositeOperator::BlendCompositeOp);
+    m_view = std::make_shared<Magick::Pixels>(*m_image);
+    m_pixels = m_view->get(0, 0, Width(), Height());
+  }
 
-    [[nodiscard]]
-    std::unique_ptr<CAbstractImage> Clone() const noexcept override
+  void ConvertToRGBA() override
+  {
+    if (Channels() == 4)
     {
-        return std::make_unique<MagicImage>(*this);
+      return;
     }
+    assert(false); // TODO
+    auto new_image = MagicImage(Width(), Height());
+    new_image.Composite(*this, 0, 0);
+    std::swap(*this, new_image);
+  }
 
-  private:
-    std::shared_ptr<Magick::Image>  m_image;
-    std::shared_ptr<Magick::Pixels> m_view;
-    Magick::Quantum*                m_pixels{nullptr};
+  [[nodiscard]]
+  std::unique_ptr<CAbstractImage> Clone() const noexcept override
+  {
+    return std::make_unique<MagicImage>(*this);
+  }
+
+private:
+  std::shared_ptr<Magick::Image>  m_image;
+  std::shared_ptr<Magick::Pixels> m_view;
+  Magick::Quantum*                m_pixels{nullptr};
 };
 } // namespace TexturePacker
