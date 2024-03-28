@@ -15,9 +15,13 @@
 #include <SDL3/SDL_opengl.h>
 #endif
 
+#include <IconsFontAwesome5.h>
+#include <IconsMaterialDesign.h>
+
 #include <fmt/core.h>
 #include <portable-file-dialogs.h>
 
+#include <array>
 #include <filesystem>
 #include <iostream>
 #include <set>
@@ -76,7 +80,19 @@ public:
     const auto  scale = SDL_GetWindowDisplayScale(m_window.get());
     const float font_size = 20.f * scale;
     io.FontDefault =
-        io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", font_size);
+        io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Medium.ttf", font_size);
+
+    const float menu_bar_font_size = font_size * 1.5f;
+    io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Medium.ttf", menu_bar_font_size);
+    const float ico_font_size = menu_bar_font_size * 2.f / 3.f;
+    // merge in icons from Font Awesome
+    static const std::array<ImWchar, 3> icons_ranges = {ICON_MIN_FA, ICON_MAX_16_FA, 0};
+    ImFontConfig                        icons_config;
+    icons_config.MergeMode = true;
+    icons_config.PixelSnapH = true;
+    icons_config.GlyphMinAdvanceX = ico_font_size;
+    m_ico_font = io.Fonts->AddFontFromFileTTF(
+        "assets/fonts/" FONT_ICON_FILE_NAME_FAS, ico_font_size, &icons_config, icons_ranges.data());
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(m_window.get(), m_renderer.get());
@@ -89,7 +105,6 @@ public:
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 
-    m_open_folder_ico.release();
     m_image_to_preview.release();
     m_renderer.release();
     m_window.release();
@@ -107,27 +122,32 @@ public:
       ImGui_ImplSDL3_NewFrame();
       ImGui::NewFrame();
 
-      // ImGui::ShowDemoWindow(nullptr);
+      constexpr bool show_demo = false;
+      if (show_demo)
+      {
+        ImGui::ShowDemoWindow(nullptr);
+      }
+      else
+      {
+        ProcessDocking();
 
-      ProcessDocking();
+        // Menu Bar
+        ProcessMenuBar();
 
-      // Menu Bar
-      ProcessMenuBar();
+        // Left Hierarchy view
+        ProcessHierarchy();
 
-      // Left Hierarchy view
-      ProcessHierarchy();
+        // Preview
+        ProcessPreview();
 
-      // Preview
-      ProcessPreview();
+        // Right Property view
+        ProcessProperties();
 
-      // Right Property view
-      ProcessProperties();
-
-      // Viewport
-      ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
-      ImGui::Text("Viewport contents");
-      ImGui::End();
-
+        // Viewport
+        ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
+        ImGui::Text("Viewport contents");
+        ImGui::End();
+      }
       // Rendering
       ImGui::Render();
       // SDL_SetRenderScale(m_renderer.get(),
@@ -202,34 +222,22 @@ private:
 
   void ProcessMenuBar()
   {
-    // ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {10.f, 10.f});
+    ImGui::PushFont(m_ico_font);
     if (ImGui::BeginMainMenuBar())
     {
-
-      // if (m_open_folder_ico == nullptr)
-      //{
-      //     m_open_folder_ico =
-      //         std::make_unique<TexturePacker::CImage>("./assets/open_folder_ico.png");
-      // }
-      // ImGui::ImageButton(m_open_folder_ico->GetTexture(m_renderer.get()), {10.f, 10.f});
-
-      if (ImGui::BeginMenu("File"))
+      if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O"))
       {
-        if (ImGui::MenuItem("Open", "Ctrl+O"))
-        {
-          m_selected_folder = pfd::select_folder("Select directory").result();
-          std::cout << "Selected dir: " << m_selected_folder << "\n";
-        }
-        if (ImGui::MenuItem("Exit"))
-        {
-          m_is_running = false;
-        }
-        ImGui::EndMenu();
+        m_selected_folder = pfd::select_folder("Select directory").result();
+        std::cout << "Selected dir: " << m_selected_folder << "\n";
+      }
+      if (ImGui::MenuItem(ICON_FA_DOOR_CLOSED " Exit"))
+      {
+        m_is_running = false;
       }
 
       ImGui::EndMainMenuBar();
     }
-    // ImGui::PopStyleVar();
+    ImGui::PopFont();
   }
 
   void DirectoryTreeViewRecursive(const std::filesystem::path& path)
@@ -417,10 +425,10 @@ private:
   WindowPtr                              m_window{nullptr};
   RenderPtr                              m_renderer{nullptr};
   std::unique_ptr<TexturePacker::CImage> m_image_to_preview{nullptr};
-  std::unique_ptr<TexturePacker::CImage> m_open_folder_ico{nullptr};
   std::filesystem::path                  m_selected_folder;
   std::filesystem::path                  m_selected_path;
   TexturePacker::CPackSettings           m_pack_settings;
+  ImFont*                                m_ico_font{nullptr};
 };
 
 int run_gui(int, char**)

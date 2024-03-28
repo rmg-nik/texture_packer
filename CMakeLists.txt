@@ -62,6 +62,11 @@ target_include_directories(imgui SYSTEM
     ${imgui_SOURCE_DIR}/misc/cpp
 )
 
+set(IconFontCppHeaders_SOURCE_DIR "ThirdParty/IconFontCppHeaders")
+# Build imgui static library
+add_library(IconFontCppHeaders INTERFACE)
+target_include_directories(IconFontCppHeaders SYSTEM INTERFACE ${IconFontCppHeaders_SOURCE_DIR})
+
 #find_package(ImageMagick COMPONENTS Magick++ MagickCore MagickWand REQUIRED)
 
 add_subdirectory(texture_packer_lib)

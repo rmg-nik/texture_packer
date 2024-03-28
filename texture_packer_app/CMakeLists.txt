@@ -13,6 +13,7 @@ target_link_libraries(${PROJECT_NAME}
     cxxopts 
     portable_file_dialogs
     fmt::fmt
+    IconFontCppHeaders
     )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
